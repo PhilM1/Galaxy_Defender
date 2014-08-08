@@ -16,12 +16,22 @@ public class SplashBackground : MonoBehaviour {
 		Resize();
 	}
 
-	//resizes the background image based on the camera size.
+	//resizes the background image based on the camera size so that it fits on the screen.
 	void Resize()
 	{
 		float screenHeight = Camera.main.orthographicSize * 2.0f;
 		float screenWidth = screenHeight / Screen.height * Screen.width;
-		float scale = screenWidth / sr.sprite.bounds.size.x;
+		float scale = 1;
+		if(screenHeight > screenWidth)
+		{
+			scale = screenHeight / sr.sprite.bounds.size.x;
+		}
+		else
+		{
+			scale = screenWidth / sr.sprite.bounds.size.x;
+		}
+
+
 		transform.localScale = new Vector3(scale,scale,1);
 	}
 }

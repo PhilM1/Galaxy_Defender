@@ -27,7 +27,7 @@ public class SplashText : MonoBehaviour {
 	//Positions the sprite on the screen.
 	void Wobble()
 	{
-		float speed = 0.5f;
+		float speed = 0.2f;
 		float bounds = 0.1f;
 		transform.position = new Vector2(0 , transform.position.y + speed * wobbleDir * Time.deltaTime);
 		if(transform.position.y > initYPos + bounds)
