@@ -13,18 +13,23 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
     public float spriteRotation = 0;
     public Vector2 spriteOrigin = Vector2.zero;
 
+    public Vector2 size = Vector2.zero;
+    private Vector3 m_ScaleWithCamera = Vector3.one;
+
 	void OnEnable()
 	{
 		//-- cache the Camera2D object
 		m_Camera2D = Camera.main.gameObject.GetComponent<Camera2D>();
 		m_Camera2D.AddListener( this );
 
-        //-- get the sprites origin to use as the origin in screen space
-        //SpriteRenderer sr = transform.GetComponent<SpriteRenderer>() as SpriteRenderer;
-        //if( sr != null )
-        //{
-        //    Vector2 test = sr.sprite.textureRectOffset;
-        //}
+        //-- get the sprite information
+        SpriteRenderer sr = transform.GetComponent<SpriteRenderer>() as SpriteRenderer;
+        if( sr != null )
+        {
+            //get the original sprite texture size
+            size.x = sr.sprite.rect.width;
+            size.y = sr.sprite.rect.height;
+        }
 	}
 
 	void OnDestroy()
@@ -34,12 +39,19 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
 
 	private void UpdateScale()
 	{
-		//-- scale with the cameras zoom
-		if(m_Camera2D != null)
-		{
-			Vector3 scale = new Vector3(m_Camera2D.zoom, m_Camera2D.zoom, 1.0f);
-			transform.localScale = scale;
-		}
+        //-- scale with the cameras zoom
+        if (m_Camera2D != null)
+        {
+            if (true == updateScale)
+            {
+                m_ScaleWithCamera = new Vector3( 1.0f / m_Camera2D.zoom,  1.0f / m_Camera2D.zoom, 1.0f);
+            }
+            else
+            {
+                m_ScaleWithCamera = Vector3.one;
+            }
+        }
+		
 	}
 
 	void LateUpdate()
@@ -49,12 +61,6 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
 
 	public void Camera2DPostUpdate()
 	{
-		//-- update the scale with the camera zoom change
-		if(true == updateScale)
-		{
-			UpdateScale();
-		}
-		
 		//-- set the world position by screenspace coordinates
 		SetPosition(screenPosition);
 
@@ -66,15 +72,10 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
 
         //-- update the origin
         SetOrigin(spriteOrigin);
+
+        //-- update the scale with the camera zoom change        
+        UpdateScale();
 	}
-
-
-
-
-
-
-
-
 
     public void SetPosition(Vector2 position)
     {
@@ -92,8 +93,8 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
             screenPosition.y = y;
 
             //-- convert screen space to world space
-            float wY = (Camera.main.transform.localPosition.y + Camera.main.orthographicSize) - (y / m_Camera2D.pixelsPerUnit * m_Camera2D.zoom);
-            float wX = (Camera.main.transform.localPosition.x - (Camera.main.orthographicSize * Camera.main.aspect)) + (x / m_Camera2D.pixelsPerUnit * m_Camera2D.zoom);
+            float wY = (Camera.main.transform.localPosition.y + Camera.main.orthographicSize) - (y / m_Camera2D.pixelsPerUnit / m_Camera2D.zoom);
+            float wX = (Camera.main.transform.localPosition.x - (Camera.main.orthographicSize * Camera.main.aspect)) + (x / m_Camera2D.pixelsPerUnit / m_Camera2D.zoom);
 
             //-- cache the world space coordinates
             m_WorldPosition = new Vector2(wX, wY);
@@ -116,7 +117,8 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
     {
         spriteScale.x = scaleX;
         spriteScale.y = scaleY;
-        transform.localScale = new Vector3( scaleX, scaleY, 1.0f );
+        //-- multiply in the scale with the camera scaling
+        transform.localScale = new Vector3( scaleX * m_ScaleWithCamera.x, scaleY * m_ScaleWithCamera.y, 1.0f );
     }
 
     public void SetRotation( float rotation )
@@ -129,5 +131,36 @@ public class SpriteTransform : MonoBehaviour , ICamera2DListener
     public void SetOrigin( Vector2 origin )
     {
         spriteOrigin = origin;
+    }
+
+    public Vector2 getScaledSize()
+    {
+        Vector2 result = Vector2.zero;
+        result.x = size.x * spriteScale.x;
+        result.y = size.y * spriteScale.y;
+        return result;
+    }
+
+    public bool Contains( Vector2 point )
+    {
+        bool result = false;
+
+        //-- combine scale values from user setting taking into account the camera zoom
+        Vector2 multipliedScale = spriteScale;
+        if( updateScale != true )
+        {
+            multipliedScale.x *= m_Camera2D.zoom;
+            multipliedScale.y *= m_Camera2D.zoom;
+        }
+
+        if (point.x > screenPosition.x && point.x < (screenPosition.x + (size.x * multipliedScale.x)) )
+        {
+            if (point.y > screenPosition.y && point.y < (screenPosition.y + (size.y * multipliedScale.y)) )
+            {
+                result = true;
+            }
+        }
+
+        return result;
     }
 }

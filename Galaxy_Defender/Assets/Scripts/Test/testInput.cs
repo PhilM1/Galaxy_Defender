@@ -6,12 +6,15 @@ public class testInput : MonoBehaviour {
     public TouchInput touchInput;
 
     private SpriteRenderer m_SpriteRenderer;
+    private SpriteTransform m_STransform;
 
 	// Use this for initialization
 	void Start () 
     {
         registerTouch();
         m_SpriteRenderer = transform.GetComponent<SpriteRenderer>() as SpriteRenderer;
+
+        m_STransform = transform.GetComponent<SpriteTransform>() as SpriteTransform;
 	}
 	
 	// Update is called once per frame
@@ -54,13 +57,25 @@ public class testInput : MonoBehaviour {
 
     void TapInput( TouchEventInfo touchInfo, float deltaTime)
     {
-        if (m_SpriteRenderer != null)
+        if (m_STransform != null)
         {
-            //if( m_SpriteRenderer.bounds.Contains( new Vector3( touchInfo.position.x, touchInfo.position.y ) ) == true )
+            //-- convert mouse coordinates to use top left as screen origin rather than bottom left
+            Vector2 convertedMouseCoordinates = convertMouseCoordinates( touchInfo.position );
+            if (m_STransform.Contains(new Vector3(convertedMouseCoordinates.x, convertedMouseCoordinates.y)) == true)
             {
-                DebugOut.Instance.AddDebug("tapped");
+                DebugOut.Instance.AddDebug("tapped sprite");
             }
         }
     }
 
+    //-- converts mouse coordinates from bottom left origin to top left origin
+    Vector2 convertMouseCoordinates( Vector2 point )
+    {
+        Vector2 result = Vector2.zero;
+
+        result.x = point.x;
+        result.y = Screen.height - point.y;
+
+        return result;
+    }
 }

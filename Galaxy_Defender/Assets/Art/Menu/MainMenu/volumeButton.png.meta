@@ -1,8 +1,8 @@
 fileFormatVersion: 2
-guid: 5330b8b349ee8da4981635f2f0f954b0
+guid: 27420ec6489eefb4b8237b8e126b6d11
 TextureImporter:
   fileIDToRecycleName:
-    21300000: MenuBackground
+    21300000: volumeButton
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -25,7 +25,7 @@ TextureImporter:
   textureFormat: -1
   maxTextureSize: 1024
   textureSettings:
-    filterMode: 0
+    filterMode: -1
     aniso: 1
     mipBias: -1
     wrapMode: 1

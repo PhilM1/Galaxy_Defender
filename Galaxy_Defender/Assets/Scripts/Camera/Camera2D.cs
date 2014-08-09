@@ -42,10 +42,10 @@ public class Camera2D : MonoBehaviour {
 	void Awake()
 	{
 		//initial camera zoom 1:1 pixel/unit ratio
-		camera.orthographicSize = (Screen.height / pixelsPerUnit / 2.0f) * zoom;
+		camera.orthographicSize = (Screen.height / pixelsPerUnit / 2.0f) / zoom;
 
 		//set origin at bottom left corner
-		camera.transform.position = new Vector3((Screen.width / pixelsPerUnit / 2.0f) * zoom, camera.orthographicSize, -10);
+		camera.transform.position = new Vector3((Screen.width / pixelsPerUnit / 2.0f) / zoom, camera.orthographicSize, -10);
 	}
 
 	public Rect GetScreenRect()
@@ -58,7 +58,7 @@ public class Camera2D : MonoBehaviour {
 
 	void Update()
 	{
-		camera.orthographicSize = (Screen.height / pixelsPerUnit / 2.0f) * zoom;
+		camera.orthographicSize = (Screen.height / pixelsPerUnit / 2.0f) / zoom;
 
 		if(followTarget != null)
 		{
