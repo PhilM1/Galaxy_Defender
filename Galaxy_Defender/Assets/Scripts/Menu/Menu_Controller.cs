@@ -3,7 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Menu_Controller : MonoBehaviour 
-{	
+{
+
+    public VolumeMenu volumeMenu;
+    public AchievementMenu achievementMenu;
+
 	private List<IMenuStateHandler> m_Stack = new List<IMenuStateHandler>();
 	
 	//add whichever menu was passed to the top of the stack

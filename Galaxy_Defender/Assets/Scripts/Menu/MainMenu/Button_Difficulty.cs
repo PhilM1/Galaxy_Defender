@@ -19,7 +19,7 @@ public class Button_Difficulty : UIButton
 
     public override void OnClick(TouchEventInfo touchInfo )
     {
-        int buttonIndex = (int)SpriteIndex.SPRITE_INDEX_DIFFICULTY;
+        int buttonIndex = (int)MainMenuSpriteIndex.SPRITE_INDEX_DIFFICULTY;
         if (mainMenu.sprites[buttonIndex] != null)
         {
             //-- convert mouse coordinates to use top left as screen origin rather than bottom left

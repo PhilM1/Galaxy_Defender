@@ -17,7 +17,7 @@ public class Button_Volume : UIButton {
 
     public override void OnClick(TouchEventInfo touchInfo)
     {
-        int buttonIndex = (int)SpriteIndex.SPRITE_INDEX_VOLUME;
+        int buttonIndex = (int)MainMenuSpriteIndex.SPRITE_INDEX_VOLUME;
         if (mainMenu.sprites[buttonIndex] != null)
         {
             //-- convert mouse coordinates to use top left as screen origin rather than bottom left
@@ -26,6 +26,7 @@ public class Button_Volume : UIButton {
             if (mainMenu.sprites[buttonIndex].Contains(new Vector3(convertedMouseCoordinates.x, convertedMouseCoordinates.y)) == true)
             {
                 DebugOut.Instance.AddDebug("tapped volume");
+                mainMenu.GoToVolumeMenu();
             }
         }
     }
